@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i class="tuotiao totiao-wode"></i>
+    <i class="tuotiao totiao-wode">刘从元</i>
   </div>
 </template>
 
