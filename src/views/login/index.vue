@@ -1,6 +1,10 @@
 <template>
   <div class="login-container">
-    <van-nav-bar title="登入" />
+    <van-nav-bar name="chat-o" title="登入">
+      <template #left>
+        <van-icon name="cross" color="#fff" @click="$router.push('/my')" />
+      </template>
+    </van-nav-bar>
     <van-form @submit="onSubmit" ref="from">
       <van-field
         v-model="user.mobile"
@@ -62,8 +66,6 @@ import { Toast } from "vant";
 export default {
   data() {
     return {
-      username: "",
-      password: "",
       isShowtime: false,
       isdisable: false,
       user: {
@@ -95,22 +97,28 @@ export default {
     };
   },
   methods: {
+    //点击按钮的提交事件
     async onSubmit() {
       try {
+        //提交后请求数据
         const res = await onSubmit(this.user);
         console.log(res);
+        this.$store.commit("setuser", res.data.data);
         Toast.success("登入成功");
+        this.$router.push("/");
       } catch (e) {
+        //打印报错的内容
         console.log(e);
+        //失败的话返回失败的结果或者是把其他的错误
         Toast.fail(e?.response?.data?.message || "服务端错误");
       }
-      //   const res = await onSubmit(this.user);
-      //   console.log(res);
-      //   console.log(values);
+      const res = await onSubmit(this.user);
+      console.log(res);
+      // console.log(values);
     },
     async getVerificationCode() {
       try {
-        await this.$refs.from.validate("mobile");
+        await this.$refs.from.validate("mobile"); //返回的是promise对象
       } catch (e) {
         console.log(e);
         return;
@@ -120,7 +128,6 @@ export default {
         await getSmsCode(this.user.mobile);
         this.isShowtime = true;
         this.$toast.success("发送验证码成功");
-        // console.log(this);
       } catch (e) {
         console.log(e);
         this.$toast.fail(e?.response?.data?.message || "出错了");
